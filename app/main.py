@@ -28,11 +28,11 @@ def home():
 def add_team():
     return {"data": "data"}
 
-@app.delete("/teams")
+@app.delete("/team")
 def delete_team():
     return {"data": "data"}
 
-@app.put("/teams")
+@app.put("/team")
 def update_team():
     return {"data": "data"}
 
