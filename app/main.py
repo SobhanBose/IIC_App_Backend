@@ -24,16 +24,20 @@ def home():
 
 
 #TEAM
-@app.get("/team")
-def team():
-    return {"data": "data"}
-
-@app.post("/teams")
+@app.post("/team")
 def add_team():
     return {"data": "data"}
 
-@app.post("/teams")
+@app.delete("/teams")
 def delete_team():
+    return {"data": "data"}
+
+@app.put("/teams")
+def update_team():
+    return {"data": "data"}
+
+@app.get("/team")
+def team():
     return {"data": "data"}
 
 
