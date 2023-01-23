@@ -1,4 +1,4 @@
-from .database import Base
+from .utils.database import Base
 from sqlalchemy import Column, String, Integer, DateTime
 from sqlalchemy_utils import EmailType
 
@@ -6,8 +6,7 @@ from sqlalchemy_utils import EmailType
 class User(Base):
     __tablename__ = 'users'
 
-    id = Column(Integer, primary_key=True)
-    username = Column(String, unique=True, nullable=False)
+    username = Column(String, primary_key=True)
     password = Column(String, nullable=False)
     name = Column(String, nullable=False)
     email = Column(EmailType, unique=True, nullable=False)
@@ -18,7 +17,7 @@ class User(Base):
 class Team(Base):
     __tablename__ = 'team'
 
-    id = Column(Integer, primary_key=True)
+    username = Column(Integer, primary_key=True)
 
 
 class Event(Base):
