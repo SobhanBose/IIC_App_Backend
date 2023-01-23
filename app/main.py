@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, status, Response, HTTPException
 from sqlalchemy.orm import Session
-from . import schemas, models
-from . import database
+from typing import List
+from . import schemas, models, database
 import datetime
 
 app = FastAPI()
@@ -73,15 +73,15 @@ def update_event(id: int, request: schemas.Event, db: Session = Depends(get_db))
     return {"detail": f"Event with id {id} was updated"}
 
 
-@app.get("/events", status_code=status.HTTP_200_OK)
+@app.get("/events", status_code=status.HTTP_200_OK, response_model=List[schemas.ShowEvent])
 def get_events(db: Session = Depends(get_db)):
     events = db.query(models.Event).all()
     return events
 
 
-@app.get("/events/{id}")
+@app.get("/events/{id}", status_code=status.HTTP_200_OK, response_model=schemas.ShowEvent)
 def get_event_by_id(id: int, db: Session = Depends(get_db)):
     event = db.query(models.Event).filter(models.Event.id == id).first()
     if not event:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Event with id {id} was not found")
-    return event        
+    return event
