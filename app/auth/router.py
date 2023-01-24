@@ -5,12 +5,12 @@ from datetime import timedelta
 from app import models
 from app.auth import schemas
 from app.utils import database, hashing
-from app.JWTtoken import token
+from app.JWTtoken import token, responseModels
 
 
 router = APIRouter()
 
-@router.post("/login")
+@router.post("/login", response_model=responseModels.ShowToken)
 def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
     user = db.query(models.User).filter(models.User.username == request.username).first()
     if not user:
