@@ -1,5 +1,6 @@
 from .utils.database import Base
-from sqlalchemy import Column, String, Integer, DateTime
+from sqlalchemy import Column, String, Integer, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy_utils import EmailType
 
 
@@ -11,13 +12,17 @@ class User(Base):
     name = Column(String, nullable=False)
     email = Column(EmailType, unique=True, nullable=False)
     contact_no = Column(Integer, unique=True, nullable=False)
-    pic = Column(String)
+    pic = Column(String, nullable=True)
+
+    team = relationship("Team", back_populates="user")
 
 
 class Team(Base):
     __tablename__ = 'team'
 
-    username = Column(Integer, primary_key=True)
+    username = Column(String, ForeignKey("users.username"), primary_key=True)
+
+    user = relationship("User", back_populates="team")
 
 
 class Event(Base):

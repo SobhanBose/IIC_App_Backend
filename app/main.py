@@ -10,6 +10,7 @@ from app.user import router as user_router
 from app.team import router as team_router
 from app.about import router as about_router
 
+
 app = FastAPI()
 
 models.Base.metadata.create_all(database.engine)

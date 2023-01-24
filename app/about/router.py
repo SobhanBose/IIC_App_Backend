@@ -9,5 +9,5 @@ from app.about import responseModels, schemas
 router = APIRouter()
 
 @router.get("/aboutus")
-def home():
+def about_us():
     return {"data": "Lorem Ipsum"}

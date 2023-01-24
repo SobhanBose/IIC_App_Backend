@@ -17,17 +17,17 @@ def create_user(request: schemas.User, db: Session = Depends(database.get_db)):
     return new_user
 
 
-@router.delete("/user/{username}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/user/{username}", status_code=status.HTTP_200_OK)
 def delete_user(username: str, db: Session = Depends(database.get_db)):
     user = db.query(models.User).filter(models.User.username == username)
     if not user.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"user{username} not found")
     user.delete(synchronize_session=False)
     db.commit()
-    return {"detail": "user {username} was deleted"}
+    return {"detail": f"user {username} was deleted"}
 
 
-@router.put("/euser/{username}", status_code=status.HTTP_202_ACCEPTED)
+@router.put("/user/{username}", status_code=status.HTTP_202_ACCEPTED)
 def update_user(username: str, request: schemas.User, db: Session = Depends(database.get_db)):
     user = db.query(models.User).filter(models.User.username == username)
     if not user.first():
@@ -38,13 +38,13 @@ def update_user(username: str, request: schemas.User, db: Session = Depends(data
     return {"detail": f"User {username} was updated"}
 
 
-@router.get("/user", status_code=status.HTTP_200_OK, response_model=List[responseModels.ShowUser])
+@router.get("/user", status_code=status.HTTP_302_FOUND, response_model=List[responseModels.ShowUser])
 def get_users(db: Session = Depends(database.get_db)):
     users = db.query(models.User).all()
     return users
 
 
-@router.get("/users/{username}", status_code=status.HTTP_200_OK, response_model=responseModels.ShowUser)
+@router.get("/users/{username}", status_code=status.HTTP_302_FOUND, response_model=responseModels.ShowUser)
 def get_user_by_username(username: str, db: Session = Depends(database.get_db)):
     user = db.query(models.User).filter(models.User.username == username).first()
     if not user:
