@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from app.JWTtoken import schemas
+from app.utils import database
+from app import models
 
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 ALGORITHM = "HS256"
@@ -18,7 +20,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
-def verify_access_token(token: str, credentials_exception):
+def verify_access_token(token: str, credentials_exception, db):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
@@ -27,3 +29,8 @@ def verify_access_token(token: str, credentials_exception):
         token_data = schemas.TokenData(username=username)
     except JWTError:
         raise credentials_exception
+    
+    user = db.query(models.User).filter(models.User.username == token_data.username).first()
+    if not user:
+        raise credentials_exception
+    return user
