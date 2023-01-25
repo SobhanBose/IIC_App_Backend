@@ -5,5 +5,5 @@ class User(BaseModel):
     password: str = Field(...)
     name: str = Field(...)
     email: EmailStr = Field(...)
-    contact_no: int = Field(...)
+    contact_no: int = Field(..., ge=1000000000, le=9999999999)
     pic: str

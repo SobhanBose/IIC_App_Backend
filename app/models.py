@@ -1,4 +1,4 @@
-from .utils.database import Base
+from app.utils.database import Base
 from sqlalchemy import Column, String, Integer, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import EmailType
