@@ -28,7 +28,7 @@ def login_access_token(request: OAuth2PasswordRequestForm = Depends(), db: Sessi
 
 
 @router.post("/forgot_password", response_model=responseModels.ShowToken)
-def generate_password_reset_token(request: schemas.ForgotPassword, db: Session = Depends(database.get_db)):
+def generate_password_reset_token(request: schemas.ForgotPassword, db: Session = Depends(database.get_db)) -> responseModels.ShowToken:
     user = db.query(models.User).filter(models.User.email == request.email).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="invalid credentials")
@@ -41,8 +41,8 @@ def generate_password_reset_token(request: schemas.ForgotPassword, db: Session =
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.post("/reset_password")
-def reset_password(request: schemas.ResetPassword, db: Session = Depends(database.get_db)):
+@router.post("/reset_password", status_code=status.HTTP_202_ACCEPTED)
+def reset_password(request: schemas.ResetPassword, db: Session = Depends(database.get_db)) -> dict:
     if not request.password or not request.token:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="please enter both password and token")
     

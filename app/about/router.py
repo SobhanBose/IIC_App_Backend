@@ -8,6 +8,6 @@ from app.about import responseModels, schemas
 
 router = APIRouter()
 
-@router.get("/aboutus")
-def about_us():
+@router.get("/aboutus", status_code=status.HTTP_200_OK)
+def about_us() -> dict:
     return {"data": "Lorem Ipsum"}

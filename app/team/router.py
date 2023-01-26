@@ -8,7 +8,7 @@ from app.team import responseModels, schemas
 router = APIRouter()
 
 @router.post("/team/", status_code=status.HTTP_201_CREATED, response_model=responseModels.ShowTeam)
-def add_team(request: schemas.Team, db: Session = Depends(database.get_db)):
+def add_team(request: schemas.Team, db: Session = Depends(database.get_db)) -> responseModels.ShowTeam:
     new_team_member = models.Team(username=request.username)
     db.add(new_team_member)
     db.commit()
@@ -17,7 +17,7 @@ def add_team(request: schemas.Team, db: Session = Depends(database.get_db)):
 
 
 @router.delete("/team/{username}", status_code=status.HTTP_200_OK)
-def delete_team(username: str, db: Session = Depends(database.get_db)):
+def delete_team(username: str, db: Session = Depends(database.get_db)) -> dict:
     team_member = db.query(models.Team).filter(models.Team.username==username)
     if not team_member.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"team member {username} not found")
@@ -27,6 +27,6 @@ def delete_team(username: str, db: Session = Depends(database.get_db)):
 
 
 @router.get("/team", status_code=status.HTTP_302_FOUND, response_model=List[responseModels.ShowTeam])
-def get_team(db: Session = Depends(database.get_db)):
+def get_team(db: Session = Depends(database.get_db)) -> responseModels.ShowTeam:
     team_members = db.query(models.Team).all()
     return team_members

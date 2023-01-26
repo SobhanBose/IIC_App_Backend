@@ -9,7 +9,7 @@ from app.user import responseModels, schemas
 router = APIRouter()
 
 @router.post("/user", status_code=status.HTTP_201_CREATED, response_model=responseModels.ShowUser)
-def create_user(request: schemas.User, db: Session = Depends(database.get_db)):
+def create_user(request: schemas.User, db: Session = Depends(database.get_db)) -> responseModels.ShowUser:
     new_user = models.User(username=request.username, password=hashing.hash_pswd(request.password), name=request.name, email=request.email, contact_no=request.contact_no, pic=request.pic)
     db.add(new_user)
     db.commit()
@@ -18,7 +18,7 @@ def create_user(request: schemas.User, db: Session = Depends(database.get_db)):
 
 
 @router.delete("/user/{username}", status_code=status.HTTP_200_OK)
-def delete_user(username: str, db: Session = Depends(database.get_db)):
+def delete_user(username: str, db: Session = Depends(database.get_db)) -> dict:
     user = db.query(models.User).filter(models.User.username == username)
     if not user.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"user{username} not found")
@@ -29,7 +29,7 @@ def delete_user(username: str, db: Session = Depends(database.get_db)):
 
 
 @router.put("/user/{username}", status_code=status.HTTP_202_ACCEPTED)
-def update_user(username: str, request: schemas.UpdateUser, db: Session = Depends(database.get_db)):
+def update_user(username: str, request: schemas.UpdateUser, db: Session = Depends(database.get_db)) -> dict:
     user = db.query(models.User).filter(models.User.username == username)
     if not user.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User {username} was not found") 
@@ -40,13 +40,13 @@ def update_user(username: str, request: schemas.UpdateUser, db: Session = Depend
 
 
 @router.get("/user", status_code=status.HTTP_302_FOUND, response_model=List[responseModels.ShowUser])
-def get_users(db: Session = Depends(database.get_db)):
+def get_users(db: Session = Depends(database.get_db)) -> List[responseModels.ShowUser]:
     users = db.query(models.User).all()
     return users
 
 
 @router.get("/users/{username}", status_code=status.HTTP_302_FOUND, response_model=responseModels.ShowUser)
-def get_user_by_username(username: str, db: Session = Depends(database.get_db)):
+def get_user_by_username(username: str, db: Session = Depends(database.get_db)) -> responseModels.ShowUser:
     user = db.query(models.User).filter(models.User.username == username).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"user {username} not found")
