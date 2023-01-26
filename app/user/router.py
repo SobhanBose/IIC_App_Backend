@@ -29,15 +29,15 @@ def delete_user(username: str, db: Session = Depends(database.get_db)) -> dict:
     return {"detail": f"user {username} was deleted"}
 
 
-@router.put("/user/{username}", status_code=status.HTTP_202_ACCEPTED)
-def update_user(username: str, request: schemas.UpdateUser, db: Session = Depends(database.get_db)) -> dict:
-    user = db.query(models.User).filter(models.User.username == username)
+@router.put("/user/update", status_code=status.HTTP_202_ACCEPTED)
+def update_user(request: schemas.UpdateUser, current_user: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(database.get_db)) -> dict:
+    user = db.query(models.User).filter(models.User.username == current_user.username)
     if not user.first():
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User {username} was not found") 
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User {current_user.username} was not found") 
     
     user.update(request.dict(), synchronize_session=False)
     db.commit()
-    return {"detail": f"User {username} was updated"}
+    return {"detail": f"User {current_user.username} was updated"}
 
 
 @router.get("/user", status_code=status.HTTP_302_FOUND, response_model=List[responseModels.ShowUser])
