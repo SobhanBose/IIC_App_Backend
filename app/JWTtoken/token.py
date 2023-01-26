@@ -1,3 +1,5 @@
+from fastapi import Depends, HTTPException
+from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from app.JWTtoken import schemas
@@ -20,7 +22,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
-def verify_access_token(token: str, credentials_exception, db):
+def verify_access_token(token: str, db, credentials_exception: HTTPException | None = None, get_user_instance: bool = True):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
@@ -30,7 +32,9 @@ def verify_access_token(token: str, credentials_exception, db):
     except JWTError:
         raise credentials_exception
     
-    user = db.query(models.User).filter(models.User.username == token_data.username).first()
+    user = db.query(models.User).filter(models.User.username == token_data.username)
     if not user:
         raise credentials_exception
+    if get_user_instance:
+        return user.first()
     return user

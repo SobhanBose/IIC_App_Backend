@@ -17,7 +17,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         headers={"WWW-Authenticate": "Bearer"},
     )
 
-    return jwttoken.verify_access_token(token, credentials_exception, db)
+    return jwttoken.verify_access_token(token, db, credentials_exception)
 
 
 def get_current_active_user(current_user: schemas.User = Depends(get_current_user)):

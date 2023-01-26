@@ -25,4 +25,28 @@ def login_access_token(request: OAuth2PasswordRequestForm = Depends(), db: Sessi
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.post("/forgot_password", response_model=responseModels.ShowToken)
+def generate_password_reset_token(request: schemas.ForgotPassword, db: Session = Depends(database.get_db)):
+    user = db.query(models.User).filter(models.User.email == request.email).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="invalid credentials")
     
+    #create JWT token
+    access_token_expires = timedelta(minutes=token.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = token.create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.post("/reset_password")
+def reset_password(request: schemas.ResetPassword, db: Session = Depends(database.get_db)):
+    if not request.password or not request.token:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="please enter both password and token")
+    
+    user = token.verify_access_token(request.token, db, HTTPException(status_code=status.HTTP_401_UNAUTHORIZED), get_user_instance = False)
+    user.update({"password": hashing.hash_pswd(request.password)}, synchronize_session=False)
+    db.commit()
+    return {"detail": "password reset successfully"}

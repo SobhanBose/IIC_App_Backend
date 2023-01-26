@@ -22,18 +22,19 @@ def delete_user(username: str, db: Session = Depends(database.get_db)):
     user = db.query(models.User).filter(models.User.username == username)
     if not user.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"user{username} not found")
+    
     user.delete(synchronize_session=False)
     db.commit()
     return {"detail": f"user {username} was deleted"}
 
 
 @router.put("/user/{username}", status_code=status.HTTP_202_ACCEPTED)
-def update_user(username: str, request: schemas.User, db: Session = Depends(database.get_db)):
+def update_user(username: str, request: schemas.UpdateUser, db: Session = Depends(database.get_db)):
     user = db.query(models.User).filter(models.User.username == username)
     if not user.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User {username} was not found") 
-    else:
-        user.update(request, synchronize_session=False)
+    
+    user.update(request.dict(), synchronize_session=False)
     db.commit()
     return {"detail": f"User {username} was updated"}
 
