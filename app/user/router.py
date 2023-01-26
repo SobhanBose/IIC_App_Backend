@@ -5,6 +5,7 @@ from typing import List
 from app import models
 from app.utils import database, hashing
 from app.user import responseModels, schemas
+from app.OAuth2 import oauth2
 
 router = APIRouter()
 
@@ -45,7 +46,12 @@ def get_users(db: Session = Depends(database.get_db)) -> List[responseModels.Sho
     return users
 
 
-@router.get("/users/{username}", status_code=status.HTTP_302_FOUND, response_model=responseModels.ShowUser)
+@router.get("/user/me", status_code=status.HTTP_302_FOUND, response_model=responseModels.ShowUser)
+def get_current_user(user: schemas.User = Depends(oauth2.get_current_user)) -> responseModels.ShowUser:
+    return user
+
+
+@router.get("/user/{username}", status_code=status.HTTP_302_FOUND, response_model=responseModels.ShowUser)
 def get_user_by_username(username: str, db: Session = Depends(database.get_db)) -> responseModels.ShowUser:
     user = db.query(models.User).filter(models.User.username == username).first()
     if not user:

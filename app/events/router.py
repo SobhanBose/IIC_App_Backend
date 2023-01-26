@@ -17,7 +17,7 @@ def create_event(request: schemas.Event, db: Session = Depends(database.get_db))
     return new_event
 
 
-@router.delete("/events/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/events/{id}", status_code=status.HTTP_200_OK)
 def delete_event(id: int, db: Session = Depends(database.get_db)) -> dict:
     event = db.query(models.Event).filter(models.Event.id == id)
     if not event.first():
