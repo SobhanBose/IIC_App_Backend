@@ -24,4 +24,5 @@ Still left to do:
 
 <br>
 PS: Use TablePlus to view the db. Its a great software.
+<br>
 PS: Didn't use a remote db cause Heroku now makes you add a payment method to start a project😒
