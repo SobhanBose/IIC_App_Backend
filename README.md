@@ -10,18 +10,17 @@ To run locally:
 2. Open terminal to the repo (can use venv to create venv if u want to, definitely suggested) and run `pip install -r requirements.txt`
 3. from same repo `uvicorn app.main:app --reload`
 4. api will be live at `http://127.0.0.1:8000`
-5. go to `http://127.0.0.1:8000/docs for SwaggerUI`
-5. for login use Authorize button and not the login route(thats just there to generate JWT and will be hidden in the public version)
+5. go to `http://127.0.0.1:8000/docs` for SwaggerUI
+5. for login use Authorize button and not the login route(thats just there to generate JWT and will be hidden in the production version)
 <br>
 
-There is an existing user in the db: 
-- username: user1
-- password: updatedpswd
-<br>
+I don't remember the username and password of the user in db so please make a new one🙂
+
 
 Still left to do:
 1. OTP authentication
 2. Make admin login
 3. Profile pic for team members
+
 <br>
 PS: Use TablePlus to view the db. Its a great software.
